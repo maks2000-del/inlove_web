@@ -1,4 +1,4 @@
-import Pages from "./pages/Pages";
+import Pages from "./pages/Home/Pages";
 import Category from "./components/Category";
 import { BrowserRouter } from "react-router-dom";
 import Search from "./components/Search";

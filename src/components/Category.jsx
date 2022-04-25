@@ -1,26 +1,32 @@
-import { FaPizzaSlice, FaHamburger } from "react-icons/fa";
-import { GiNoodles, GiChopsticks } from "react-icons/gi";
+import { AiFillHome } from "react-icons/ai";
+import { IoMdSettings } from "react-icons/io";
+import { BiBookHeart,BiCalendarHeart  } from "react-icons/bi";
+import { FaHandHoldingHeart } from "react-icons/fa";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 function Category() {
   return (
     <List>
-      <SLink to={"/cuisine/Italian"}>
-        <FaPizzaSlice />
-        <h4>Italian</h4>
+      <SLink to={"/"}>
+        <AiFillHome />
+        <h4>Home</h4>
       </SLink>
-      <SLink to={"/cuisine/American"}>
-        <FaHamburger />
-        <h4>American</h4>
+      <SLink to={"/complimentConstructor/"}>
+        <FaHandHoldingHeart />
+        <h4>Compliment</h4>
       </SLink>
-      <SLink to={"/cuisine/Thai"}>
-        <GiNoodles />
-        <h4>Thai</h4>
+      <SLink to={"/memoryConstructor/"}>
+        <BiBookHeart />
+        <h4>Memory</h4>
       </SLink>
-      <SLink to={"/cuisine/Japanese"}>
-        <GiChopsticks />
-        <h4>Japanese</h4>
+      <SLink to={"/spacialDateConstructor/"}>
+        <BiCalendarHeart />
+        <h4>Date</h4>
+      </SLink>
+      <SLink to={"/settings/"}>
+        <IoMdSettings />
+        <h4>Settings</h4>
       </SLink>
     </List>
   );
