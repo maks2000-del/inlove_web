@@ -52,11 +52,6 @@ function Recepie() {
             <h4 dangerouslySetInnerHTML={{ __html: details.instructions }}></h4>
           </div>
         )}
-        {/* <ul>
-          {details.extendedIngredients.map((ingredient) => {
-            return <li key={ingredient.id}>{ingredient.original}</li>;
-          })}
-        </ul> */}
       </Info>
     </DetailWrapper>
   );
