@@ -23,8 +23,17 @@ function ComplimentConstructor() {
       </div>
       <Button>
         <button
-          onClick={() => {
+          onClick={async () => {
             console.log("b pressed");
+            let data = { coupleId: "1", date: "'2001-10-10'", text: complimentText };
+
+            fetch("http://localhost:3001/api/compliment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            }).then((res) => {
+              console.log("Request complete! response:", res);
+            });
           }}
         >
           Send
