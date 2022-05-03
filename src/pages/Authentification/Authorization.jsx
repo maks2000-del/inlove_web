@@ -1,10 +1,14 @@
-import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
+import React, { useContext } from "react";
+import { Context } from "../../context";
 
 function Authorization() {
+  const [context, setContext] = useContext(Context);
+
   const [email, setEmail] = useState("");
   const [password, SetPassword] = useState("");
+
   const submitHandler = (e) => {
     e.preventDefault();
   };
@@ -43,13 +47,20 @@ function Authorization() {
                 password: password,
               };
 
-              const data = await fetch("http://localhost:3001/api/user/auth", {
+              const authData = await fetch("http://localhost:3001/api/user/auth", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(inputData),
               });
-              const authStatus = await data.json();
-              authStatus.isUserExist ? console.log("ok") : console.log("not ok");
+              const authInfo = await authData.json();
+              const newContextData = {
+                authorized: authInfo.authStatus,
+                userId: authInfo.id,
+                userName: authInfo.name,
+                userEmail: authInfo.email,
+              };
+              setContext(newContextData);
+              console.log(authInfo.authStatus);
             }}
           >
             Login

@@ -2,8 +2,12 @@ import styled from "styled-components";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../context";
+import React, { useContext } from "react";
 
-function Search() {
+function AppBar() {
+  const [context] = useContext(Context);
+
   const [input, setInput] = useState("");
   const navigate = useNavigate();
 
@@ -13,6 +17,9 @@ function Search() {
   };
 
   return (
+    <Wrapper>
+      <div className="logo">inLove</div>
+      <div className="search-bar">
     <FormStyle onSubmit={submitHandler}>
       <div>
         <FaSearch></FaSearch>
@@ -25,14 +32,34 @@ function Search() {
         />
       </div>
     </FormStyle>
+    </div>
+    <div className="user-info">{context.userName}</div>
+    </Wrapper>
   );
 }
+const Wrapper = styled.div`
+  margin: 1rem 10rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .logo {
+    flex: 1;
+    text-align: center;
+  }
+  .user-info {
+    flex: 1;
+    text-align: center;
+  }
+  .search-bar {
+    flex: 4;
+  }
+`;
 
 const FormStyle = styled.form`
-  margin: 0rem 10rem;
+  
 
   div {
-    width: 100%;
     position: relative;
   }
 
@@ -56,4 +83,4 @@ const FormStyle = styled.form`
   }
 `;
 
-export default Search;
+export default AppBar;

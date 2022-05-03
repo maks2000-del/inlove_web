@@ -1,13 +1,34 @@
+import React, { useContext } from "react";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Context } from "../../context";
 
 function Settings() {
-  const [complimentText, setComplimentText] = useState("");
+  const [context , setContext] = useContext(Context);
 
+  let couple;
+  const [complimentText, setComplimentText] = useState("");
+  
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(complimentText);
   };
+
+  const checkForParthnersRequest = async () => {
+    console.log("b pressed");
+
+    const coupleData = await fetch(
+      `http://localhost:3001/api/coupleById/${context.userId}`,
+      {
+        method: "GET",
+      }
+    );
+    couple = await coupleData.json();
+    console.log(couple);
+  };
+
+  useEffect(() => {
+    checkForParthnersRequest();
+  },);
 
   return (
     <FormStyle onSubmit={submitHandler}>
@@ -32,6 +53,7 @@ function Settings() {
           Send
         </Button>
       </div>
+      <div>You have couples' request from user: {context.name}</div>
     </FormStyle>
   );
 }

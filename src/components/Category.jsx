@@ -1,11 +1,12 @@
 import { AiFillHome } from "react-icons/ai";
 import { IoMdSettings } from "react-icons/io";
-import { BiBookHeart,BiCalendarHeart  } from "react-icons/bi";
+import { BiBookHeart, BiCalendarHeart } from "react-icons/bi";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 function Category() {
+
   return (
     <List>
       <SLink to={"/"}>
@@ -24,7 +25,7 @@ function Category() {
         <BiCalendarHeart />
         <h4>Date</h4>
       </SLink>
-      <SLink to={"/settings/"}>
+      <SLink to={`/settings/`}>
         <IoMdSettings />
         <h4>Settings</h4>
       </SLink>

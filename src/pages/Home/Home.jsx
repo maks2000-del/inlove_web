@@ -1,13 +1,13 @@
-import Veggie from "../../components/Veggie";
-import Popular from "../../components/Popular";
+import Dates from "../../components/Dates";
+import Memorys from "../../components/Memorys";
 
 import React from 'react'
 
 function Home() {
   return (
     <div>
-        <Veggie/>
-        <Popular/>
+        <Dates/>
+        <Memorys/>
     </div>
   )
 }
