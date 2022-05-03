@@ -5,30 +5,46 @@ import { Context } from "../../context";
 
 function Settings() {
   const [context , setContext] = useContext(Context);
-
-  let couple;
+  
+  let secondUserName = "";
   const [complimentText, setComplimentText] = useState("");
   
   const submitHandler = (e) => {
     e.preventDefault();
   };
 
-  const checkForParthnersRequest = async () => {
-    console.log("b pressed");
+  const fetchRequestInfo = async () => {
+    const couple = await checkForParthnersRequest();
+    console.log(couple);
+    await getUserById(couple.girl_id);
+  }
 
+  const getUserById = async (userId) => {
+    const userData = await fetch(
+      `http://localhost:3001/api/user/${userId}`,
+      {
+        method: "GET",
+      }
+    );
+    const user = await userData.json();
+    console.log(user.name);
+    secondUserName = user.name;
+  };
+
+  const checkForParthnersRequest = async () => {
     const coupleData = await fetch(
       `http://localhost:3001/api/coupleById/${context.userId}`,
       {
         method: "GET",
       }
     );
-    couple = await coupleData.json();
-    console.log(couple);
+    const couple = await coupleData.json();
+    return couple;
   };
 
-  useEffect(() => {
-    checkForParthnersRequest();
-  },);
+  // useEffect(() => {
+  //   fetchRequestInfo();
+  // }, []);
 
   return (
     <FormStyle onSubmit={submitHandler}>
@@ -47,13 +63,13 @@ function Settings() {
         </div>
         <Button
           onClick={() => {
-            console.log("b pressed");
+            fetchRequestInfo();
           }}
         >
           Send
         </Button>
       </div>
-      <div>You have couples' request from user: {context.name}</div>
+      <div>You have couples' request from user: {secondUserName}</div>
     </FormStyle>
   );
 }

@@ -31,7 +31,7 @@ function Dates() {
   return (
     <div>
       <Wrapper>
-        <h3>My important dates</h3>
+        <h3>My memorys</h3>
 
         <Splide
           options={{
