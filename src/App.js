@@ -10,6 +10,9 @@ function App() {
     userId: 0,
     userName: "",
     userEmail: "",
+    userSex: "",
+    coupleId: 0,
+    coupleStatus: "",
   });
 
   return (

@@ -13,6 +13,32 @@ function Authorization() {
     e.preventDefault();
   };
 
+  const authUser = async () => {
+    console.log(email + " " + password);
+    let inputData = {
+      email: email,
+      password: password,
+    };
+
+    const authData = await fetch("http://localhost:3001/api/user/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(inputData),
+    });
+    const authInfo = await authData.json();
+    const newContextData = {
+      authorized: authInfo.authStatus,
+      userId: authInfo.id,
+      userName: authInfo.name,
+      userEmail: authInfo.email,
+      userSex: authInfo.sex,
+      coupleId: 0,
+      coupleStatus: "none",
+    };
+    setContext(newContextData);
+    console.log(authInfo);
+  };
+
   return (
     <div>
       <FormStyle onSubmit={submitHandler}>
@@ -41,26 +67,7 @@ function Authorization() {
         <Button>
           <button
             onClick={async () => {
-              console.log(email + " " + password);
-              let inputData = {
-                email: email,
-                password: password,
-              };
-
-              const authData = await fetch("http://localhost:3001/api/user/auth", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(inputData),
-              });
-              const authInfo = await authData.json();
-              const newContextData = {
-                authorized: authInfo.authStatus,
-                userId: authInfo.id,
-                userName: authInfo.name,
-                userEmail: authInfo.email,
-              };
-              setContext(newContextData);
-              console.log(authInfo.authStatus);
+              authUser();
             }}
           >
             Login

@@ -4,31 +4,55 @@ import { useState, useEffect } from "react";
 import { Context } from "../../context";
 
 function Settings() {
-  const [context , setContext] = useContext(Context);
-  
-  let secondUserName = "";
-  const [complimentText, setComplimentText] = useState("");
-  
+  const [context, setContext] = useContext(Context);
+  const [secondUserName, setSecondUserName] = useState("");
+
   const submitHandler = (e) => {
     e.preventDefault();
   };
 
   const fetchRequestInfo = async () => {
-    const couple = await checkForParthnersRequest();
-    console.log(couple);
-    await getUserById(couple.girl_id);
-  }
+    try {
+      const couple = await checkForParthnersRequest();
+      console.log(couple);
+      if (couple.boy_id === context.userId) {
+        await getUserById(couple.girl_id);
+      }
+      if (couple.girl_id === context.userId) {
+        await getUserById(couple.boy_id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getUserById = async (userId) => {
-    const userData = await fetch(
-      `http://localhost:3001/api/user/${userId}`,
-      {
+    try {
+      const userData = await fetch(`http://localhost:3001/api/user/${userId}`, {
         method: "GET",
-      }
-    );
-    const user = await userData.json();
-    console.log(user.name);
-    secondUserName = user.name;
+      });
+      const user = await userData.json();
+
+      setSecondUserName(user.name);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUserByName = async (userName) => {
+    try {
+      const userData = await fetch(
+        `http://localhost:3001/api/user/name/${userName}`,
+        {
+          method: "GET",
+        }
+      );
+      const user = await userData.json();
+      console.log(user.id);
+      return user.id;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const checkForParthnersRequest = async () => {
@@ -38,39 +62,135 @@ function Settings() {
         method: "GET",
       }
     );
+    if (coupleData.status === 505 || coupleData.status === 505) {
+      console.log(coupleData.statusText);
+      return "error";
+    } else {
+      const couple = await coupleData.json();
+      const newContextData = {
+        authorized: context.authorized,
+        userId: context.userId,
+        userName: context.userName,
+        userEmail: context.userEmail,
+        userSex: context.userSex,
+        coupleId: couple.id,
+        coupleStatus: couple.status,
+      };
+      setContext(newContextData);
+      return couple;
+    }
+  };
+
+  const sendCoupleRequest = async (secondUserId) => {
+    let inputData =
+      context.userSex === "male"
+        ? {
+            boyId: context.userId,
+            girlId: secondUserId,
+            status: "request",
+          }
+        : {
+            boyId: secondUserId,
+            girlId: context.userId,
+            status: "request",
+          };
+    console.log(inputData);
+    const coupleData = await fetch(`http://localhost:3001/api/couple`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(inputData),
+    });
     const couple = await coupleData.json();
+    const newContextData = {
+      authorized: context.authorized,
+      userId: context.userId,
+      userName: context.userName,
+      userEmail: context.userEmail,
+      userSex: context.userSex,
+      coupleId: couple.id,
+      coupleStatus: "request",
+    };
+    setContext(newContextData);
     return couple;
   };
 
-  // useEffect(() => {
-  //   fetchRequestInfo();
-  // }, []);
+  const updateCoupleStatus = async (status) => {
+    let inputData = {
+      status: status,
+    };
+
+    const coupleData = await fetch(
+      `http://localhost:3001/api/couple/${context.coupleId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inputData),
+      }
+    );
+    const couple = await coupleData.json();
+    const newContextData = {
+      authorized: context.authStatus,
+      userId: context.id,
+      userName: context.name,
+      userEmail: context.email,
+      userSex: context.sex,
+      coupleId: context.coupleId,
+      coupleStatus: couple.status,
+    };
+    setContext(newContextData);
+    console.log(context.coupleStatus);
+  };
+
+  useEffect(() => {
+    fetchRequestInfo();
+  }, []);
 
   return (
-    <FormStyle onSubmit={submitHandler}>
-      <div className="text">
-        <h4>Send request to yout parthner</h4>
-      </div>
-      <div className="input_and_button">
-        <div>
-          <input
-            onChange={(e) => {
-              setComplimentText(e.target.value);
-            }}
-            type="text"
-            value={complimentText}
-          />
-        </div>
-        <Button
-          onClick={() => {
-            fetchRequestInfo();
-          }}
-        >
-          Send
-        </Button>
-      </div>
-      <div>You have couples' request from user: {secondUserName}</div>
-    </FormStyle>
+    <div>
+      {context.coupleStatus === "none" && (
+        <FormStyle onSubmit={submitHandler}>
+          <div className="text">
+            <h4>Send request to yout parthner</h4>
+          </div>
+          <div className="input_and_button">
+            <div>
+              <input
+                onChange={(e) => {
+                  setSecondUserName(e.target.value);
+                }}
+                type="text"
+                value={secondUserName}
+              />
+            </div>
+            <Button
+              onClick={async () => {
+                const secondUserId = await getUserByName(secondUserName);
+                if (secondUserId) {
+                  sendCoupleRequest(secondUserId);
+                }
+              }}
+            >
+              Send
+            </Button>
+          </div>
+        </FormStyle>
+      )}
+      {context.coupleStatus === "request" && (
+        <FormStyle>
+          <h4>You have couples' request from user: {secondUserName}</h4>
+          <div>
+            <Button
+              onClick={async () => {
+                updateCoupleStatus("accepted");
+              }}
+            >
+              Accept
+            </Button>
+          </div>
+        </FormStyle>
+      )}
+      {context.coupleStatus === "accepted" && <div></div>}
+    </div>
   );
 }
 
