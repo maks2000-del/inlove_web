@@ -1,10 +1,15 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { Context } from "../../context";
+import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function MemoryConstructor() {
+  const [context] = useContext(Context);
   const [memoryTitle, setMemoryTitle] = useState("");
   const [memoryText, setMemoryText] = useState("");
-  const [memoryDateText, setMemoryDateText] = useState("");
+  const [memoryLocation, setMemoryLocation] = useState("");
+  const [memoryDate, setMemoryDate] = useState(new Date());
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -12,53 +17,98 @@ function MemoryConstructor() {
 
   return (
     <div>
-      <FormStyle onSubmit={submitHandler}>
+      {context.coupleStatus === "accepted" ? (
         <div>
-          <h4>Enter memory title</h4>
-          <input
-            onChange={(e) => {
-              setMemoryTitle(e.target.value);
-            }}
-            type="text"
-            value={memoryTitle}
-          />
+          <FormStyle onSubmit={submitHandler}>
+            <div>
+              <h4>Enter memory title</h4>
+              <input
+                onChange={(e) => {
+                  setMemoryTitle(e.target.value);
+                }}
+                type="text"
+                value={memoryTitle}
+              />
+            </div>
+          </FormStyle>
+          <FormStyle onSubmit={submitHandler}>
+            <div>
+              <h4>Location</h4>
+              <input
+                onChange={(e) => {
+                  setMemoryLocation(e.target.value);
+                }}
+                type="text"
+                value={memoryLocation}
+              />
+            </div>
+          </FormStyle>
+          <FormStyle onSubmit={submitHandler}>
+            <div>
+              <h4>Memory text</h4>
+              <input
+                onChange={(e) => {
+                  setMemoryText(e.target.value);
+                }}
+                type="text"
+                value={memoryText}
+              />
+            </div>
+          </FormStyle>
+          <DatePickerBlock>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                disableFuture
+                format="yyyy/MM/dd"
+                label="Memoty date"
+                views={["year", "month", "date"]}
+                inputVariant="outlined"
+                value={memoryDate}
+                onChange={setMemoryDate}
+              />
+            </MuiPickersUtilsProvider>
+          </DatePickerBlock>
+          <Button>
+            <button
+              onClick={() => {
+                console.log(
+                  memoryTitle +
+                    " " +
+                    memoryText +
+                    " " +
+                    memoryLocation +
+                    " " +
+                    memoryDate
+                );
+                let data = {
+                  coupleId: context.coupleId,
+                  title: memoryTitle,
+                  description: memoryText,
+                  date: memoryDate,
+                  location: memoryLocation,
+                  photosId: 0,
+                };
+
+                fetch("http://localhost:3001/api/memory", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+                }).then((res) => {
+                  console.log("Request complete! response:", res);
+                });
+                setMemoryTitle("");
+                setMemoryText("");
+                setMemoryLocation("");
+                setMemoryDate(new Date());
+              }}
+            >
+              Create
+            </button>
+          </Button>
         </div>
-      </FormStyle>
-      <FormStyle onSubmit={submitHandler}>
-        <div>
-          <h4>Memory text</h4>
-          <input
-            onChange={(e) => {
-              setMemoryText(e.target.value);
-            }}
-            type="text"
-            value={memoryText}
-          />
-        </div>
-      </FormStyle>
-      <FormStyle onSubmit={submitHandler}>
-        <div>
-          <h4>Memory date</h4>
-          <input
-            onChange={(e) => {
-              setMemoryDateText(e.target.value);
-            }}
-            type="text"
-            value={memoryDateText}
-          />
-        </div>
-        <Button>
-          <button
-            onClick={() => {
-              console.log(
-                memoryTitle + " " + memoryText + " " + memoryDateText
-              );
-            }}
-          >
-            Create
-          </button>
-        </Button>
-      </FormStyle>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
@@ -88,6 +138,7 @@ const FormStyle = styled.form`
     outline: none;
     width: 100%;
   }
+
   svg {
     position: absolute;
     top: 50%;
@@ -97,9 +148,15 @@ const FormStyle = styled.form`
   }
 `;
 
+const DatePickerBlock = styled.div`
+  margin: 0rem 10rem;
+  margin-top: 2rem;
+`;
+
 const Button = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin: 0rem 10rem;
 
   button {
     padding: 1rem 2rem;
@@ -110,5 +167,6 @@ const Button = styled.div`
     margin: 1rem;
   }
 `;
+
 
 export default MemoryConstructor;

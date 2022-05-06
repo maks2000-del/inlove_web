@@ -31,11 +31,11 @@ function Dates() {
   return (
     <div>
       <Wrapper>
-        <h3>My memorys</h3>
+        <h3>My dates</h3>
 
         <Splide
           options={{
-            perPage: 3,
+            perPage: 4,
             arrows: false,
             pagination: false,
             drag: "free",

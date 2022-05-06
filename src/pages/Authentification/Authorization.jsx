@@ -26,6 +26,7 @@ function Authorization() {
       body: JSON.stringify(inputData),
     });
     const authInfo = await authData.json();
+    
     const newContextData = {
       authorized: authInfo.authStatus,
       userId: authInfo.id,

@@ -1,9 +1,13 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { Context } from "../../context";
+import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function SpacialDateConstructor() {
+  const [context] = useContext(Context);
   const [dateTitle, setDateTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -11,39 +15,60 @@ function SpacialDateConstructor() {
 
   return (
     <div>
-    <FormStyle onSubmit={submitHandler}>
-      <div>
-        <h4>Enter date title</h4>
-        <input
-          onChange={(e) => {
-            setDateTitle(e.target.value);
-          }}
-          type="text"
-          value={dateTitle}
-        />
-      </div>
-    </FormStyle>
-    <FormStyle onSubmit={submitHandler}>
-      <div>
-        <h4>Select date</h4>
-        <input
-          onChange={(e) => {
-            setDate(e.target.value);
-          }}
-          type="text"
-          value={date}
-        />
-      </div>
-      <Button>
-        <button
-          onClick={() => {
-            console.log(dateTitle + " " + date);
-          }}
-        >
-          Create
-        </button>
-      </Button>
-    </FormStyle>
+      {context.coupleStatus === "accepted" ? (
+        <div>
+          <FormStyle onSubmit={submitHandler}>
+            <div>
+              <h4>Enter date title</h4>
+              <input
+                onChange={(e) => {
+                  setDateTitle(e.target.value);
+                }}
+                type="text"
+                value={dateTitle}
+              />
+            </div>
+          </FormStyle>
+          <DatePickerBlock>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                format="yyyy/MM/dd"
+                label="Date"
+                views={["year", "month", "date"]}
+                inputVariant="outlined"
+                value={selectedDate}
+                onChange={setSelectedDate}
+              />
+            </MuiPickersUtilsProvider>
+          </DatePickerBlock>
+          <Button>
+            <button
+              onClick={() => {
+                console.log(dateTitle + " " + selectedDate);
+                let data = {
+                  coupleId: context.coupleId,
+                  title: dateTitle,
+                  actionDate: selectedDate,
+                  bgColorId: 0,
+                };
+                fetch("http://localhost:3001/api/date", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+                }).then((res) => {
+                  console.log("Request complete! response:", res);
+                });
+                setDateTitle("");
+                setSelectedDate(new Date());
+              }}
+            >
+              Create
+            </button>
+          </Button>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
@@ -82,9 +107,15 @@ const FormStyle = styled.form`
   }
 `;
 
+const DatePickerBlock = styled.div`
+  margin: 0rem 10rem;
+  margin-top: 2rem;
+`;
+
 const Button = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin: 0rem 10rem;
 
   button {
     padding: 1rem 2rem;

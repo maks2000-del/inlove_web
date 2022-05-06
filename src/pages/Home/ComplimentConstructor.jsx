@@ -1,45 +1,75 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { Context } from "../../context";
+import DateFnsUtils from "@date-io/date-fns"; 
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function ComplimentConstructor() {
+  const [context] = useContext(Context);
   const [complimentText, setComplimentText] = useState("");
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   const submitHandler = (e) => {
     e.preventDefault();
     console.log(complimentText);
   };
-
   return (
-    <FormStyle onSubmit={submitHandler}>
-      <div>
-        <h4>Enter compliment text</h4>
-        <input
-          onChange={(e) => {
-            setComplimentText(e.target.value);
-          }}
-          type="text"
-          value={complimentText}
-        />
-      </div>
-      <Button>
-        <button
-          onClick={async () => {
-            console.log("b pressed");
-            let data = { coupleId: "1", date: "'2001-10-10'", text: complimentText };
+    <div>
+      {context.coupleStatus === "accepted" ? (
+        <div>
+        <FormStyle onSubmit={submitHandler}>
+          <div>
+            <h4>Enter compliment text</h4>
+            <input
+              onChange={(e) => {
+                setComplimentText(e.target.value);
+              }}
+              class="textInput"
+              type="text"
+              value={complimentText}
+            />
+          </div>
+        </FormStyle>
+        <DatePickerBlock>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            disablePast
+            format="yyyy/MM/dd"
+            label="Date to show"
+            views={["year", "month", "date"]}
+            inputVariant="outlined"
+            value={selectedDate}
+            onChange={handleDateChange}
+          />
+        </MuiPickersUtilsProvider>
+        </DatePickerBlock>
+        <Button>
+            <button
+              onClick={async () => {
+                let data = {
+                  coupleId: context.coupleId,
+                  date: selectedDate,
+                  text: complimentText,
+                };
 
-            fetch("http://localhost:3001/api/compliment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            }).then((res) => {
-              console.log("Request complete! response:", res);
-            });
-          }}
-        >
-          Send
-        </button>
-      </Button>
-    </FormStyle>
+                fetch("http://localhost:3001/api/compliment", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+                }).then((res) => {
+                  console.log("Request complete! response:", res);
+                });
+                setComplimentText("");
+              }}
+            >
+              Send
+            </button>
+          </Button>
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
   );
 }
 
@@ -56,7 +86,7 @@ const FormStyle = styled.form`
     position: relative;
   }
 
-  input {
+  .textInput {
     border: none;
     background: linear-gradient(35deg, #494949, #313131);
     font-size: 1rem;
@@ -67,6 +97,8 @@ const FormStyle = styled.form`
     outline: none;
     width: 100%;
   }
+
+
   svg {
     position: absolute;
     top: 50%;
@@ -76,9 +108,15 @@ const FormStyle = styled.form`
   }
 `;
 
+const DatePickerBlock = styled.div`
+margin: 0rem 10rem;
+margin-top: 2rem;
+`;
+
 const Button = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin: 0rem 10rem;
 
   button {
     padding: 1rem 2rem;

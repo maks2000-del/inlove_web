@@ -33,7 +33,7 @@ function AppBar() {
       </div>
     </FormStyle>
     </div>
-    <div className="user-info">{context.userName}</div>
+    <div className="user-info">{context.userName}:{context.coupleStatus}</div>
     </Wrapper>
   );
 }
