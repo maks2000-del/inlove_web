@@ -1,30 +1,36 @@
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
-import { Link } from "react-router-dom";
+import { Context } from "../context";
 
 import "@splidejs/react-splide/css";
 
 function Dates() {
-  const [veggie, setVeggie] = useState([]);
+  const [context, setContext] = useContext(Context);
+  const [dates, setDates] = useState([]);
 
   useEffect(() => {
-    getVeggie();
+    fetchDates();
   }, []);
 
-  const getVeggie = async () => {
-    const check = localStorage.getItem("veggie");
+  const fetchDates = async () => {
+    const checkLocalData = localStorage.getItem("dates");
 
-    if (check) {
-      setVeggie(JSON.parse(check));
+    if (checkLocalData) {
+      setDates(JSON.parse(checkLocalData));
     } else {
-      const api = await fetch(
-        `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&tags=vegetarian`
-      );
-      const data = await api.json();
+      try {
+        const api = await fetch(
+          `http://localhost:3001/api/dates/${context.coupleId}`
+        );
+        const data = await api.json();
 
-      localStorage.setItem("veggie", JSON.stringify(data.recipes));
-      setVeggie(data.recipes);
+        //localStorage.setItem("dates", JSON.stringify(data.recipes));
+        setDates(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -42,15 +48,15 @@ function Dates() {
             gap: "2rem",
           }}
         >
-          {veggie.map((recepie) => {
+          {dates.map((date) => {
             return (
-              <SplideSlide key={recepie.id}>
+              <SplideSlide key={date.id}>
                 <Card>
-                  <Link to={"/recepie/" + recepie.id}>
-                    <p>{recepie.title}</p>
-                    <img src={recepie.image} alt={recepie.title} />
-                    <Gradient />
-                  </Link>
+                  <TextInfo>
+                    <p>{date.title}</p>
+                    <p>{date.action_date.substring(0, 10)}</p>
+                  </TextInfo>
+                  <Gradient />
                 </Card>
               </SplideSlide>
             );
@@ -63,6 +69,28 @@ function Dates() {
 
 const Wrapper = styled.div`
   margin: 4rem 0rem;
+`;
+
+const TextInfo = styled.div`
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  bottom: 0%;
+  transform: translate(-50%, 0%);
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-context: center;
+  align-items: center;
+  width: 100%;
+  p {
+    margin-bottom: 1rem;
+    color: white;
+    width: 80%;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
 `;
 
 const Card = styled.div`
@@ -78,22 +106,6 @@ const Card = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  p {
-    position: absolute;
-    z-index: 10;
-    left: 50%;
-    bottom: 0%;
-    transform: translate(-50%, 0%);
-    color: white;
-    width: 80%;
-    text-align: center;
-    font-weight: 600;
-    font-size: 1rem;
-    height: 40%;
-    display: flex;
-    justify-context: center;
-    align-items: center;
   }
 `;
 

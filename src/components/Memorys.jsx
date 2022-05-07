@@ -1,30 +1,33 @@
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { Link } from "react-router-dom";
+import { Context } from "../context";
 
 import "@splidejs/react-splide/css";
 
 function Memorys() {
-  const [popular, setPopular] = useState([]);
+  const [context, setContext] = useContext(Context);
+  const [memorys, setMemorys] = useState([]);
 
   useEffect(() => {
-    getPopular();
+    getMemorys();
   }, []);
 
-  const getPopular = async () => {
-    const check = localStorage.getItem("popular");
+  const getMemorys = async () => {
+    const checkLocalData = localStorage.getItem("memorys");
 
-    if (check) {
-      setPopular(JSON.parse(check));
+    if (checkLocalData) {
+      getMemorys(JSON.parse(checkLocalData));
     } else {
       const api = await fetch(
-        `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`
+        `http://localhost:3001/api/memorys/${context.coupleId}`
       );
       const data = await api.json();
 
-      localStorage.setItem("popular", JSON.stringify(data.recipes));
-      setPopular(data.recipes);
+      //localStorage.setItem("popular", JSON.stringify(data.recipes));
+      setMemorys(data);
     }
   };
 
@@ -42,13 +45,13 @@ function Memorys() {
             gap: "2rem",
           }}
         >
-          {popular.map((recepie) => {
+          {memorys.map((memory) => {
             return (
-              <SplideSlide key={recepie.id}>
+              <SplideSlide key={memory.id}>
                 <Card>
-                  <Link to={"/recepie/" + recepie.id}>
-                    <p>{recepie.title}</p>
-                    <img src={recepie.image} alt={recepie.title} />
+                  <Link to={"/recepie/" + memory.id}>
+                    <p>{memory.title}</p>
+                    <img src={memory.image} alt={memory.title} />
                     <Gradient />
                   </Link>
                 </Card>

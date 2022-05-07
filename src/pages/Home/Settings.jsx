@@ -11,6 +11,10 @@ function Settings() {
     e.preventDefault();
   };
 
+  useEffect(() => {
+    fetchRequestInfo();
+  }, []);
+
   const fetchRequestInfo = async () => {
     try {
       const couple = await checkForParthnersRequest();
@@ -140,10 +144,6 @@ function Settings() {
     setContext(newContextData);
     console.log(context.coupleStatus);
   };
-
-  useEffect(() => {
-    fetchRequestInfo();
-  }, []);
 
   return (
     <div>

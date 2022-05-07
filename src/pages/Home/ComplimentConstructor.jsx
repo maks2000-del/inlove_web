@@ -24,7 +24,7 @@ function ComplimentConstructor() {
               onChange={(e) => {
                 setComplimentText(e.target.value);
               }}
-              class="textInput"
+              className="textInput"
               type="text"
               value={complimentText}
             />
