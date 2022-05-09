@@ -89,7 +89,7 @@ const TextInfo = styled.div`
     width: 80%;
     text-align: center;
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 `;
 

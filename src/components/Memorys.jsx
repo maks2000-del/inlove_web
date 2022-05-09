@@ -51,7 +51,7 @@ function Memorys() {
                 <Card>
                   <Link to={"/recepie/" + memory.id}>
                     <p>{memory.title}</p>
-                    <img src={memory.image} alt={memory.title} />
+                    <img src={`http://localhost:3001/${memory.photos_id}`} alt={memory.title} />
                     <Gradient />
                   </Link>
                 </Card>

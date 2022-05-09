@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useContext } from "react";
 import { Context } from "../../context";
-import DateFnsUtils from "@date-io/date-fns"; 
+import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function ComplimentConstructor() {
@@ -17,39 +17,41 @@ function ComplimentConstructor() {
     <div>
       {context.coupleStatus === "accepted" ? (
         <div>
-        <FormStyle onSubmit={submitHandler}>
-          <div>
-            <h4>Enter compliment text</h4>
-            <input
-              onChange={(e) => {
-                setComplimentText(e.target.value);
-              }}
-              className="textInput"
-              type="text"
-              value={complimentText}
-            />
-          </div>
-        </FormStyle>
-        <DatePickerBlock>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <DatePicker
-            disablePast
-            format="yyyy/MM/dd"
-            label="Date to show"
-            views={["year", "month", "date"]}
-            inputVariant="outlined"
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
-        </MuiPickersUtilsProvider>
-        </DatePickerBlock>
-        <Button>
+          <FormStyle onSubmit={submitHandler}>
+            <div>
+              <h4>Enter compliment text</h4>
+              <input
+                onChange={(e) => {
+                  setComplimentText(e.target.value);
+                }}
+                className="textInput"
+                type="text"
+                value={complimentText}
+              />
+            </div>
+          </FormStyle>
+          <DatePickerBlock>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                disablePast
+                format="yyyy/MM/dd"
+                label="Date to show"
+                views={["year", "month", "date"]}
+                inputVariant="outlined"
+                value={selectedDate}
+                onChange={handleDateChange}
+              />
+            </MuiPickersUtilsProvider>
+          </DatePickerBlock>
+          <Button>
             <button
               onClick={async () => {
+                const sex = context.userSex === "male" ? "female" : "male";
                 let data = {
                   coupleId: context.coupleId,
                   date: selectedDate,
                   text: complimentText,
+                  recipent: sex,
                 };
 
                 fetch("http://localhost:3001/api/compliment", {
@@ -98,7 +100,6 @@ const FormStyle = styled.form`
     width: 100%;
   }
 
-
   svg {
     position: absolute;
     top: 50%;
@@ -109,8 +110,8 @@ const FormStyle = styled.form`
 `;
 
 const DatePickerBlock = styled.div`
-margin: 0rem 10rem;
-margin-top: 2rem;
+  margin: 0rem 10rem;
+  margin-top: 2rem;
 `;
 
 const Button = styled.div`
