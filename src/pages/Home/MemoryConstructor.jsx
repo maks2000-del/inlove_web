@@ -10,9 +10,15 @@ function MemoryConstructor() {
   const [memoryText, setMemoryText] = useState("");
   const [memoryLocation, setMemoryLocation] = useState("");
   const [memoryDate, setMemoryDate] = useState(new Date());
+  const [selectedPhoto, setSelectedPhoto] = useState("");
 
   const submitHandler = (e) => {
     e.preventDefault();
+  };
+
+  const handleChange = (event) => {
+    setSelectedPhoto(event.target.files[0].name);
+    console.log(selectedPhoto);
   };
 
   return (
@@ -68,6 +74,24 @@ function MemoryConstructor() {
               />
             </MuiPickersUtilsProvider>
           </DatePickerBlock>
+          <ImgPicker>
+          
+          <form
+            method="POST"
+            action="http://localhost:3001/profile-upload-single"
+            
+            encType="multipart/form-data"
+          >
+            <div className="inputs">
+              <div>
+                <InputPickFile onChange={handleChange} />
+              </div>
+              <div>
+                <InputSubmit />
+              </div>
+            </div>
+          </form>
+          </ImgPicker>
           <Button>
             <button
               onClick={() => {
@@ -86,7 +110,7 @@ function MemoryConstructor() {
                   description: memoryText,
                   date: memoryDate,
                   location: memoryLocation,
-                  photosId: 0,
+                  photosId: selectedPhoto,
                 };
 
                 fetch("http://localhost:3001/api/memory", {
@@ -100,6 +124,7 @@ function MemoryConstructor() {
                 setMemoryText("");
                 setMemoryLocation("");
                 setMemoryDate(new Date());
+                setSelectedPhoto("");
               }}
             >
               Create
@@ -148,6 +173,63 @@ const FormStyle = styled.form`
   }
 `;
 
+const ImgPicker = styled.div`
+  margin: 0rem 9rem;
+  margin-top: 2rem;
+  div.inputs {
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+  }
+`;
+
+const InputPickFile = styled.input.attrs({
+  type: "file",
+  name: "profile-file",
+  required: true,
+})`
+  background: #313131;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 0;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  height: 40px;
+  width: 90%;
+  border-radius: 5px;
+  border-color: transparent;
+  box-shadow: 0px;
+  outline: none;
+  transition: 0.15s;
+  text-align: center;
+  &:active {
+    background-color: #f1ac15;
+  }
+`;
+
+const InputSubmit = styled.input.attrs({
+  type: "submit",
+  value: "Submit",
+})`
+  background: #313131;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 0;
+
+  border-radius: 5px;
+  height: 40px;
+  width: 6rem;
+  border-color: transparent;
+  box-shadow: 0px;
+  outline: none;
+  transition: 0.15s;
+  text-align: center;
+  &:active {
+    background-color: #f1ac15;
+  }
+`;
+
 const DatePickerBlock = styled.div`
   margin: 0rem 10rem;
   margin-top: 2rem;
@@ -167,6 +249,5 @@ const Button = styled.div`
     margin: 1rem;
   }
 `;
-
 
 export default MemoryConstructor;

@@ -46,6 +46,7 @@ const FormWrapper = styled.div`
 const ButtonWrapper = styled.div`
   margin-bottom: 2rem;
   display: flex;
+  
   .active {
     background: linear-gradient(35deg, #494949, #313131);
     color: white;

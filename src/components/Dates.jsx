@@ -56,7 +56,7 @@ function Dates() {
                     <p>{date.title}</p>
                     <p>{date.action_date.substring(0, 10)}</p>
                   </TextInfo>
-                  <Gradient />
+                  <Gradient inputColor={dateBGColours[date.bg_color_id]} />
                 </Card>
               </SplideSlide>
             );
@@ -66,6 +66,15 @@ function Dates() {
     </div>
   );
 }
+
+const dateBGColours = {
+  0 : "rgba(255, 0, 0, 0.5)",
+  1 : "rgba(255, 200, 0, 0.5)",
+  2 : "rgba(0, 255, 18, 0.5)",
+  3 : "rgba(0, 255, 255, 0.5)",
+  4 : "rgba(0, 0, 255, 0.5)",
+  5 : "rgba(255, 0, 255, 0.5)",
+};
 
 const Wrapper = styled.div`
   margin: 4rem 0rem;
@@ -94,7 +103,7 @@ const TextInfo = styled.div`
 `;
 
 const Card = styled.div`
-  min-height: 20rem;
+  min-height: 12rem;
   border-radius: 2rem;
   overflow: hidden;
   position: relative;
@@ -114,7 +123,7 @@ const Gradient = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+  background: linear-gradient(rgba(0, 0, 0, 0), ${props => props.inputColor || "rgba(0, 0, 0, 0.5)"});
 `;
 
 export default Dates;
