@@ -1,24 +1,23 @@
 import React from "react";
 import AppBar from "../../components/AppBar";
-import Category from "../../components/Category";
+import NavMenue from "../../components/NavMenu";
 import Home from "./Home";
-import Searched from "./Searched";
-import Recepie from "./Recepie";
+import Memory from "./Memory";
 import ComplimentConstructor from "./ComplimentConstructor";
 import MemoryConstructor from "./MemoryConstructor";
 import Settings from "./Settings";
 import SpacialDateConstructor from "./SpacialDateConstructor";
 import { Route, Routes } from "react-router-dom";
 
-function Pages() {
+function Pages() { 
   return (
     <div>
       <AppBar/>
-      <Category/>
+      <NavMenue/>
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/searched/:search" element={<Searched />} />
-      <Route path="/recepie/:name" element={<Recepie />} />
+      <Route path="/" element={<Settings />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/memory/:id" element={<Memory />} />
       <Route path="/complimentConstructor/" element={<ComplimentConstructor />} />
       <Route path="/memoryConstructor/" element={<MemoryConstructor />} />
       <Route path="/settings/" element={<Settings />} />

@@ -49,7 +49,7 @@ function Memorys() {
             return (
               <SplideSlide key={memory.id}>
                 <Card>
-                  <Link to={"/recepie/" + memory.id}>
+                  <Link to={"/memory/" + memory.id}>
                     <p>{memory.title}</p>
                     <img src={`http://localhost:3001/${memory.photos_id}`} alt={memory.title} />
                     <Gradient />

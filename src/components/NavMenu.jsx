@@ -5,11 +5,11 @@ import { FaHandHoldingHeart } from "react-icons/fa";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
-function Category() {
+function NavMenue() {
 
   return (
     <List>
-      <SLink to={"/"}>
+      <SLink to={"/home"}>
         <AiFillHome />
         <h4>Home</h4>
       </SLink>
@@ -67,4 +67,4 @@ const SLink = styled(NavLink)`
   }
 `;
 
-export default Category;
+export default NavMenue;
